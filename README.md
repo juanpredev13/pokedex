@@ -1,4 +1,7 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Summary
+
+This Pokédex project is a web application built with Next.js that allows users to explore Pokémon types. It features a responsive design, internationalization support for English and Spanish, and integrates with the PokeAPI to fetch Pokémon data.
+
 
 ## Getting Started
 
@@ -14,18 +17,18 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Local [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Production [https://pokedex-moon.vercel.app/](https://pokedex-moon.vercel.app/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Key Features
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Display of all Pokémon types
+- Responsive design for various screen sizes
+- Integration with PokeAPI for fetching Pokémon data
+- State management using Redux Toolkit
+- Styling with Tailwind CSS
+- Animations using GSAP
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
