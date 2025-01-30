@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit"
 import { getPokemonTypes, getPokemonByType } from "../api/pokemon"
 import type { PokemonState, PokemonTypesResponse } from "../../types/pokemon"
 
@@ -19,22 +19,26 @@ export const fetchPokemonTypes = createAsyncThunk("pokemon/fetchTypes", async ()
 
 export const fetchPokemonByType = createAsyncThunk("pokemon/fetchByType", async (type: string) => {
   const response = await getPokemonByType(type)
-  return response.pokemon.map((p: { pokemon: { name: string; url: string } }) => ({
-    id: p.pokemon.url.split("/").slice(-2, -1)[0],
-    name: p.pokemon.name,
-    url: p.pokemon.url,
-  }))
+  const pokemonList = response.pokemon.map((p: { pokemon: { name: string; url: string } }) => {
+    const id = p.pokemon.url.split("/").slice(-2, -1)[0]
+    return {
+      id,
+      name: p.pokemon.name,
+      url: p.pokemon.url,
+    }
+  })
+  return pokemonList
 })
 
 const pokemonSlice = createSlice({
   name: "pokemon",
   initialState,
   reducers: {
-    setSelectedType: (state, action) => {
+    setSelectedType: (state, action: PayloadAction<string | null>) => {
       state.selectedType = action.payload
       state.currentPage = 1
     },
-    setCurrentPage: (state, action) => {
+    setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload
     },
     clearPokemonList: (state) => {
@@ -59,11 +63,13 @@ const pokemonSlice = createSlice({
       .addCase(fetchPokemonByType.pending, (state) => {
         state.loading = true
         state.error = null
+        state.pokemonList = [] // Clear the list while loading
       })
       .addCase(fetchPokemonByType.fulfilled, (state, action) => {
         state.loading = false
         state.pokemonList = action.payload
         state.totalPages = Math.ceil(action.payload.length / 20)
+        state.currentPage = 1 // Reset to first page when new data is loaded
       })
       .addCase(fetchPokemonByType.rejected, (state, action) => {
         state.loading = false

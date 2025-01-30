@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useAppDispatch } from "../../hooks/useAppDispatch"
 import { useAppSelector } from "../../hooks/useAppSelector"
 import { useParams, useRouter } from "next/navigation"
@@ -28,29 +28,40 @@ export default function PokemonGridPage() {
     pokemon.name.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
-  const pokemonPerPage = 20
-  const maxPages = Math.max(1, Math.ceil(filteredPokemon.length / pokemonPerPage))
-  const startIndex = (currentPage - 1) * pokemonPerPage
-  const endIndex = startIndex + pokemonPerPage
+  const ITEMS_PER_PAGE = 20
+  const totalItems = filteredPokemon.length
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems)
   const currentPokemon = filteredPokemon.slice(startIndex, endIndex)
 
   useEffect(() => {
     dispatch(fetchPokemonByType(typeName))
   }, [dispatch, typeName])
 
-  const handlePageChange = (newPage: number) => {
-    dispatch(setCurrentPage(newPage))
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      dispatch(setCurrentPage(newPage))
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    },
+    [dispatch],
+  )
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query)
-    dispatch(setCurrentPage(1))
-  }
+  const handleSearch = useCallback(
+    (query: string) => {
+      setSearchQuery(query)
+      dispatch(setCurrentPage(1)) 
+    },
+    [dispatch],
+  )
 
   const handleSelectPokemon = useCallback(async (pokemon: PokemonDetails) => {
-    const details = await getPokemonDetails(pokemon.url)
-    setSelectedPokemon(details)
+    if (!pokemon.abilities) {
+      const details = await getPokemonDetails(pokemon.url)
+      setSelectedPokemon(details)
+    } else {
+      setSelectedPokemon(pokemon)
+    }
   }, [])
 
   if (error) {
@@ -112,7 +123,7 @@ export default function PokemonGridPage() {
           )}
         </div>
 
-        {!loading && filteredPokemon.length > pokemonPerPage && (
+        {!loading && filteredPokemon.length > ITEMS_PER_PAGE && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -127,7 +138,7 @@ export default function PokemonGridPage() {
               <ChevronLeft size={20} />
             </button>
 
-            {Array.from({ length: maxPages }, (_, i) => i + 1).map((page) => (
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
                 onClick={() => handlePageChange(page)}
@@ -141,7 +152,7 @@ export default function PokemonGridPage() {
 
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === maxPages}
+              disabled={currentPage === totalPages}
               className="px-4 py-2 rounded-lg bg-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors"
             >
               <ChevronRight size={20} />

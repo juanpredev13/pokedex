@@ -1,23 +1,23 @@
 "use client"
 
 import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import type { AppDispatch, RootState } from "./states/store"
+import { useAppDispatch } from "./hooks/useAppDispatch"
+import { useAppSelector } from "./hooks/useAppSelector"
 import { fetchPokemonTypes } from "./states/pokemonSlice"
 import { TypeCard } from "./components/TypeCard"
 import { Logo } from "./components/Logo"
-import { Loader } from "./components/Loader"
+import { LoadingSpinner } from "./components/LoadingSpinner"
 
 export default function HomePage() {
-  const dispatch = useDispatch<AppDispatch>()
-  const { types, loading, error } = useSelector((state: RootState) => state.pokemon)
+  const dispatch = useAppDispatch()
+  const { types, loading, error } = useAppSelector((state) => state.pokemon)
 
   useEffect(() => {
     dispatch(fetchPokemonTypes())
   }, [dispatch])
 
   if (loading) {
-    return <Loader />
+    return <LoadingSpinner />
   }
 
   if (error) {
