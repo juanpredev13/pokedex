@@ -51,7 +51,7 @@ export function TypeCard({ name, index }: TypeCardProps) {
                 alt={`${name} type`}
                 className="w-8 h-8"
                 onError={(e) => {
-                  e.currentTarget.src = "/type-icons/placeholder.svg"
+                  e.currentTarget.src = "/placeholder.svg?height=32&width=32"
                 }}
               />
             </div>

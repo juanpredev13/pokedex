@@ -9,6 +9,8 @@ interface PokemonCardProps {
 }
 
 export function PokemonCard({ pokemon, onSelect }: PokemonCardProps) {
+  const pokemonId = pokemon.id || pokemon.url.split("/").slice(-2, -1)[0]
+
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
@@ -18,7 +20,7 @@ export function PokemonCard({ pokemon, onSelect }: PokemonCardProps) {
     >
       <div className="relative w-full h-48">
         <Image
-          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`}
+          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`}
           alt={pokemon.name}
           layout="fill"
           objectFit="contain"

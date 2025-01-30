@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import { getPokemonTypes, getPokemonByType } from "../api/pokemon"
-import type { PokemonState, PokemonTypesResponse, PokemonDetails } from "../../types/pokemon"
+import type { PokemonState, PokemonTypesResponse } from "../../types/pokemon"
 
 const initialState: PokemonState = {
   types: [],
@@ -19,7 +19,7 @@ export const fetchPokemonTypes = createAsyncThunk("pokemon/fetchTypes", async ()
 
 export const fetchPokemonByType = createAsyncThunk("pokemon/fetchByType", async (type: string) => {
   const response = await getPokemonByType(type)
-  return response.pokemon.map((p: any) => ({
+  return response.pokemon.map((p: { pokemon: { name: string; url: string } }) => ({
     id: p.pokemon.url.split("/").slice(-2, -1)[0],
     name: p.pokemon.name,
     url: p.pokemon.url,
@@ -30,11 +30,11 @@ const pokemonSlice = createSlice({
   name: "pokemon",
   initialState,
   reducers: {
-    setSelectedType: (state, action: PayloadAction<string | null>) => {
+    setSelectedType: (state, action) => {
       state.selectedType = action.payload
       state.currentPage = 1
     },
-    setCurrentPage: (state, action: PayloadAction<number>) => {
+    setCurrentPage: (state, action) => {
       state.currentPage = action.payload
     },
     clearPokemonList: (state) => {

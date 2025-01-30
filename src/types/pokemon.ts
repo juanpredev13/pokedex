@@ -20,6 +20,7 @@ export interface PokemonAbility {
 export interface PokemonDetails {
   id: number
   name: string
+  url: string 
   sprites: {
     front_default: string
     other?: {
